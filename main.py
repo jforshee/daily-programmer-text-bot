@@ -31,22 +31,20 @@ daily_component_pattern = re.compile(r"""\s*\[(?P<date>.*)\]
                                          \s*(?P<title>.*)""", re.VERBOSE)
 
 # Process the /r/dailyprogrammer submission.
-# Currently ignores Monthly challenge submissions.
 def process_submission(submission):
-    if 'Monthly' not in submission.title:
-        title_components = parse_daily_components(submission.title)
+    title = submission.title
+    match = daily_component_pattern.match(title)
+    if match is not None:
+        title_components = parse_daily_components(match)
         shortlink = submission.shortlink
         print('Building message for {0} - {1}'.format(title_components[2], shortlink))
 
         message = build_message(title_components, shortlink)
         send_message(message)
-    else:
-        print('Skipping Monthly challenge...')
 
-# Parses the title of a submission into components via regex.
+# Parses a matched submission into its components.
 # See: daily_component_pattern
-def parse_daily_components(title):
-    match = daily_component_pattern.match(title)
+def parse_daily_components(match):
     return (match.group('date'),
             match.group('difficulty')[0],
             match.group('title'))
@@ -69,7 +67,17 @@ def send_message(message):
                            body=message)
 
 subreddit = REDDIT.subreddit('dailyprogrammer')
-for submission in subreddit.stream.submissions():
-    print('Found submission {0}')
+ignore = True
+for submission in subreddit.stream.submissions(pause_after=0):
+    if submission is None:
+        ignore = False
+        continue
+    
+    # Subreddit.stream does this dumb thing where it spits out a huge list of
+    # historical submissions that we want to ignore on first run.
+    print('Found submission {0}'.format(submission.title))
+    if ignore:
+        continue
+
     process_submission(submission)
 
