@@ -30,6 +30,8 @@ daily_component_pattern = re.compile(r"""\s*\[(?P<date>.*)\]
                                          \[(?P<difficulty>.*)\]
                                          \s*(?P<title>.*)""", re.VERBOSE)
 
+# Process the /r/dailyprogrammer submission.
+# Currently ignores Monthly challenge submissions.
 def process_submission(submission):
     if 'Monthly' not in submission.title:
         title_components = parse_daily_components(submission.title)
@@ -39,12 +41,16 @@ def process_submission(submission):
     else:
         print('Skipping Monthly challenge...')
 
+# Parses the title of a submission into components via regex.
+# See: daily_component_pattern
 def parse_daily_components(title):
     match = daily_component_pattern.match(title)
     return (match.group('date'),
             match.group('difficulty')[0],
             match.group('title'))
 
+# Builds a message body from submission title components
+# and a shortlink to the submission.
 def build_message(title_components, shortlink):
     difficulty = title_components[1]
     title = title_components[2]
@@ -54,6 +60,7 @@ def build_message(title_components, shortlink):
                                                           trunc_title=trunc_title,
                                                           link=shortlink)
 
+# Sends a message body to a specified Twilio recipient.
 def send_message(message):
     TWILIO.messages.create(to=TWILIO_TO,
                            from_=TWILIO_FROM,
