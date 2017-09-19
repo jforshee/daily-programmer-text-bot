@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Pipenv stuff
+Pipfile
+Pipfile.lock
