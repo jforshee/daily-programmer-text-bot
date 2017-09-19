@@ -35,8 +35,10 @@ daily_component_pattern = re.compile(r"""\s*\[(?P<date>.*)\]
 def process_submission(submission):
     if 'Monthly' not in submission.title:
         title_components = parse_daily_components(submission.title)
-        message = build_message(title_components, submission.shortlink)
+        shortlink = submission.shortlink
+        print('Building message for {0} - {1}'.format(title_components[2], shortlink))
 
+        message = build_message(title_components, shortlink)
         send_message(message)
     else:
         print('Skipping Monthly challenge...')
@@ -68,5 +70,6 @@ def send_message(message):
 
 subreddit = REDDIT.subreddit('dailyprogrammer')
 for submission in subreddit.stream.submissions():
+    print('Found submission {0}')
     process_submission(submission)
 
