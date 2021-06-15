@@ -41,7 +41,7 @@ semver==2.7.8
 sessioninstaller==0.0.0
 six==1.10.0
 stevedore==1.26.0
-thefuck==3.21
+thefuck==3.31
 ubuntu-drivers-common==0.0.0
 ufw==0.35
 unattended-upgrades==0.1
