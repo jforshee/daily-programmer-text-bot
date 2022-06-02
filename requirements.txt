@@ -7,7 +7,7 @@ command-not-found==0.3
 decorator==4.1.2
 defer==1.0.6
 first==2.0.1
-html5lib==0.999
+html5lib==0.99999999
 language-selector==0.1
 lightdm-gtk-greeter-settings==1.2.1
 lxml==3.5.0
